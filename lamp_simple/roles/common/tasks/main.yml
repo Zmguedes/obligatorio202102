@@ -1,10 +1,18 @@
 ---
 # This playbook contains common plays that will be run on all nodes.
 
-- name: Install ntp
+- name: Install ntp on RedHat servers
   yum:
     name: ntp
-    state: present
+    state: latest
+  when: ansible_os_family == "RedHat"
+  tags: ntp
+
+- name: Install ntp on Debian servers
+  apt:
+    name: ntp
+    state: latest
+  when: ansible_os_family == "Debian"
   tags: ntp
 
 - name: Configure ntp file
@@ -21,7 +29,24 @@
     enabled: yes
   tags: ntp
 
-- name: test to see if selinux is running
+- name: Install SELinux on Debian servers
+  apt:
+    name: selinux
+    state: latest
+  when: ansible_os_family == "Debian"
+  tags: selinux
+
+- name: Test to see if SELinux is running
   command: getenforce
   register: sestatus
-  changed_when: false
+
+- name: Set SELinux to enforcing
+  lineinfile:
+    path: /etc/selinux/config
+    regexp: '^SELINUX='
+    line: SELINUX=enforcing
+  when: (sestatus == "permissive") or (sestatus == "disabled") 
+
+
+
+
