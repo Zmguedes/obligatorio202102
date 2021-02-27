@@ -15,6 +15,11 @@
   loop: "{{ packages_db }}"
   when: ansible_os_family == "Debian"
 
+- name: Check if Apache is running
+  service:
+    name: httpd
+    state: started
+
 - name: Open port 80 on firewall for RedHat servers
   firewalld:
     service: http
@@ -26,8 +31,9 @@
 
 - name: Open port 80 on firewall for Debian servers
   ufw:
-    name: http
     rule: allow
+    port: "80"
+    proto: tcp
   when: ansible_os_family == "Debian"
 
 - name: http service state
