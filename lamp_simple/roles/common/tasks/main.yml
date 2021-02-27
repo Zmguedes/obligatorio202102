@@ -3,7 +3,7 @@
 
 - name: Install ntp on RedHat servers
   yum:
-    name: ntp
+    name: chrony.x86_64 
     state: latest
   when: ansible_os_family == "RedHat"
   tags: ntp
@@ -29,24 +29,20 @@
     enabled: yes
   tags: ntp
 
+  #- name: Update Debian servers repositories cache
+  # apt: update_cache=yes
+  #when: ansible_os_family == "Debian"
+
 - name: Install SELinux on Debian servers
   apt:
-    name: selinux
+    name: "{{ item }}"
     state: latest
+  loop: "{{ selinux }}"  
   when: ansible_os_family == "Debian"
   tags: selinux
 
-- name: Test to see if SELinux is running
-  command: getenforce
-  register: sestatus
-
-- name: Set SELinux to enforcing
-  lineinfile:
-    path: /etc/selinux/config
-    regexp: '^SELINUX='
-    line: SELINUX=enforcing
-  when: (sestatus == "permissive") or (sestatus == "disabled") 
-
-
-
-
+- name: Set SELinux current mode to enforcing
+  selinux:
+    policy: targeted
+    state: enforcing
+  when: ansible_os_family == "RedHat"  

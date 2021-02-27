@@ -1,0 +1,12 @@
+---
+ntp_driftfile: /var/lib/ntp/drift
+ntp_restrict_1: 127.0.0.1
+ntp_restrict_2: -6 ::1
+ntp_includefile: /etc/ntp/crypto/pw
+ntp_keys: /etc/ntp/keys
+selinux:
+  - build-essential
+  - libsemanage-python 
+  - policycoreutils
+  - selinux-utils
+  - selinux-basics

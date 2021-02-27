@@ -1,0 +1,16 @@
+---
+packages_rh:
+   - httpd
+   - php
+   - php-mysqlnd
+   - git
+   - libsemanage-python
+   - libselinux-python
+
+packages_db:
+   - apache2
+   - php
+   - php-mysqlnd
+   - git
+   - libsemanage-python
+   - libselinux-python
