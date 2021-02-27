@@ -1,54 +1,73 @@
 ---
 # This playbook will install mysql and create db user and give permissions.
 
-- name: Install Mysql package
+- name: Install MariaDB package on RedHat servers
   yum:
     name: "{{ item }}"
-    state: installed
-  with_items:
-   - mysql-server
-   - MySQL-python
-   - libselinux-python
-   - libsemanage-python
+    state: latest
+  loop: "{{ mariadb_packages_rh }}"
+  when: ansible_os_family == "RedHat"
 
-- name: Configure SELinux to start mysql on any port
-  seboolean:
-    name: mysql_connect_any
-    state: true
-    persistent: yes
-  when: sestatus.rc != 0
+- name: Install MariaDB package on Debian servers
+  apt:
+    name: "{{ item }}"
+    state: latest
+  loop: "{{ mariadb_packages_db }}"
+  when: ansible_os_family == "Debian"
 
-- name: Create Mysql configuration file
+  #- name: Configure SELinux to start mariadb on any port
+  #  seboolean:
+  #    name: mariadb_connect_any
+  #    state: true
+  #    persistent: yes
+  #  when: sestatus.rc != 0
+
+- name: Create MariaDB configuration file
   template:
     src: my.cnf.j2
     dest: /etc/my.cnf
-  notify:
-  - restart mysql
+  notify: restart mariadb
 
-- name: Start Mysql Service
+- name: Start MariaDB Service
   service:
-    name: mysqld
+    name: mariadb
     state: started
     enabled: yes
 
-- name: insert iptables rule
-  lineinfile:
-    dest: /etc/sysconfig/iptables
-    state: present
-    regexp: "{{ mysql_port }}"
-    insertafter: "^:OUTPUT "
-    line: "-A INPUT -p tcp  --dport {{ mysql_port }} -j  ACCEPT"
-  notify: restart iptables
+- name: Open port 3306 on firewall for RedHat servers
+  firewalld:
+    port: 3306/tcp 
+    permanent: yes
+    state: enabled
+    immediate: yes
+  when: ansible_os_family == "RedHat"
+  notify: restart firewalld
+
+- name: Open port 3306 on firewall for Debian servers
+  ufw:
+    rule: allow
+    port: "3306"
+    proto: tcp
+  when: ansible_os_family == "Debian"
+
+    #- name: insert iptables rule
+    #  lineinfile:
+    #    dest: /etc/sysconfig/iptables
+    #    state: present
+    #    regexp: "{{ mysql_port }}"
+    #    insertafter: "^:OUTPUT "
+    #    line: "-A INPUT -p tcp  --dport {{ mysql_port }} -j  ACCEPT"
+    #  notify: restart iptables
 
 - name: Create Application Database
   mysql_db:
-    name: "{{ dbname }}"
+    name: "{{ mariadb_dbname }}"
     state: present
 
 - name: Create Application DB User
   mysql_user:
-    name: "{{ dbuser }}"
-    password: "{{ upassword }}"
+    name: "{{ mariadb_dbuser }}"
+    password: "{{ mariadb_upassword }}"
     priv: "*.*:ALL"
     host: '%'
     state: present

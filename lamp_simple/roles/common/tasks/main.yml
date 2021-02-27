@@ -29,10 +29,6 @@
     enabled: yes
   tags: ntp
 
-  #- name: Update Debian servers repositories cache
-  # apt: update_cache=yes
-  #when: ansible_os_family == "Debian"
-
 - name: Install SELinux on Debian servers
   apt:
     name: "{{ item }}"
@@ -41,8 +37,17 @@
   when: ansible_os_family == "Debian"
   tags: selinux
 
-- name: Set SELinux current mode to enforcing
+- name: Enable SELinux on Debian server
+  command: selinux-activate
+  when: ansible_os_family == "Debian"
+
+- name: Set SELinux current mode to enforcing on RedHat servers
   selinux:
     policy: targeted
     state: enforcing
-  when: ansible_os_family == "RedHat"  
+  when: ansible_os_family == "RedHat" 
+
+- name: Set SELinux current mode to enforcing on Debian server
+  command: selinux-config-enforcing
+  when: ansible_os_family == "Debian"
+ 

@@ -6,7 +6,8 @@ ntp_includefile: /etc/ntp/crypto/pw
 ntp_keys: /etc/ntp/keys
 selinux:
   - build-essential
-  - libsemanage-python 
+  - python3-selinux
+  - python3-semanage 
   - policycoreutils
   - selinux-utils
   - selinux-basics
