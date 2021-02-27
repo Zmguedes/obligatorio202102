@@ -6,7 +6,3 @@
   service:
     name: ntpd
     state: restarted
-
-- name: reboot Debian server
-  reboot:
-  when: ansible_os_family == "Debian"
