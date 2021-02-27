@@ -7,8 +7,11 @@ Se nos proporcionó un repositorio para instalar un paquete LAMP, el cual requer
 - Intalaciones faltantes (SELinux).
 
 Los cambios realizados fueron los siguientes:
+
 1- Se agregaron los archivos ansible.cfg e inventario. En el archivo ansible.cfg se configuró la ruta del inventario, y en el archivo inventario se configuraron las IP de los servidores CentOS y Ubuntu.
+
 2- COMMON
+        
         A) Se agregó un directorio VARS, donde se colocó un archivo main.yml, en el cual se declaran los valores de:
                 - ntp_driftfile
                 - ntp_restrict_1
@@ -22,6 +25,7 @@ Los cambios realizados fueron los siguientes:
         C) En el archivo ntp.conf.j2 del directorio TEMPLATES, se cambiaron todas las rutas configuradas allí migrándolas a archivo main.yml del directorio VARS.
         
 3- DB
+
         A) Se agregó un directorio VARS, donde se colocó un archivo main.yml, en el cual se declaran los valores de:
                 - mariadb_packages_rh
                 - mariadb_packages_db
@@ -40,6 +44,7 @@ Los cambios realizados fueron los siguientes:
         D) En el archivo my.cnf.j2 del directorio TEMPLATES, se cambiaron todas las rutas configuradas allí migrándolas a archivo main.yml del directorio VARS.
         
 4- WEB
+        
         A) Se agregó un directorio VARS, donde se colocó un archivo main.yml, en el cual se declaran los valores de:
                 - packages_rh
                 - packages_dd
@@ -51,18 +56,5 @@ Los cambios realizados fueron los siguientes:
 Para iniciar este playbook se deben ejecutar los siguientes comandos:
 
 [ansible@ansible ~]$ cd /home/ansible/repositorios/obligatorio202102/lamp_simple/
+
 [ansible@ansible lamp_simple]$ ansible-playbook site.yml
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
