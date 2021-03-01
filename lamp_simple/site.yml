@@ -8,7 +8,7 @@
   roles:
     - common
 
-- name: configure and deploy the webservers and application code
+- name: Configure and deploy the webservers and application code
   hosts: linux
   become: yes
 
