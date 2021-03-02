@@ -1,0 +1,7 @@
+[webservers]
+centos1
+ubuntu1
+
+[dbservers]
+centos1
+ubuntu1

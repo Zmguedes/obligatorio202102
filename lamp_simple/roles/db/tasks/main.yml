@@ -15,12 +15,17 @@
   loop: "{{ mariadb_packages_db }}"
   when: ansible_os_family == "Debian"
 
-  #- name: Configure SELinux to start mariadb on any port
-  #  seboolean:
-  #    name: mariadb_connect_any
-  #    state: true
-  #    persistent: yes
-  #  when: sestatus.rc != 0
+- name: Check SELinux status on RedHat server
+  command: getenforce
+  register: sestatus
+  when: ansible_os_family == "RedHat"
+
+- name: Configure SELinux to start mariadb on any port on RedHat servers
+  seboolean:
+    name: mysql_connect_any
+    state: true
+    persistent: yes
+  when: sestatus != "Permissive" and ansible_os_family == "RedHat" 
 
 - name: Create MariaDB configuration file
   template:
@@ -50,15 +55,6 @@
     proto: tcp
   when: ansible_os_family == "Debian"
 
-    #- name: insert iptables rule
-    #  lineinfile:
-    #    dest: /etc/sysconfig/iptables
-    #    state: present
-    #    regexp: "{{ mysql_port }}"
-    #    insertafter: "^:OUTPUT "
-    #    line: "-A INPUT -p tcp  --dport {{ mysql_port }} -j  ACCEPT"
-    #  notify: restart iptables
-
 - name: Create Application Database
   mysql_db:
     name: "{{ mariadb_dbname }}"
@@ -71,3 +67,4 @@
     priv: "*.*:ALL"
     host: '%'
     state: present
+  no_log: true

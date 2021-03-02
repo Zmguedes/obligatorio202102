@@ -4,15 +4,12 @@ packages_rh:
    - php
    - php-mysqlnd
    - git
-     # - libsemanage-python
-     # - libselinux-python
+   - python3-libsemanage
 
 packages_db:
    - apache2
    - php
    - php-mysqlnd
    - git
-     # - libsemanage-python
-     # - libselinux-python
 
 repository: https://github.com/bennojoy/mywebapp.git

@@ -2,7 +2,15 @@
 # Handler to handle common notifications. Handlers are called by other plays.
 # See http://docs.ansible.com/playbooks_intro.html for more information about handlers.
 
-- name: restart ntp
+- name: restart ntp_rh
   service:
-    name: ntpd
+    name: chronyd
     state: restarted
+ 
+- name: restart ntp_db
+  service:
+    name: ntp.service
+    state: restarted
+
+- name: restart Debian Servers
+  reboot:

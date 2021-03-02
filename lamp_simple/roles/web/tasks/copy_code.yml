@@ -2,10 +2,17 @@
 # These tasks are responsible for copying the latest dev/production code from
 # the version control system.
 
+- name: Clean document root folder
+  file:
+    path: /var/www/html
+    state: absent
+
 - name: Copy the code from repository
   git:
     repo: "{{ repository }}"
     dest: /var/www/html/
+    force: yes
+    update: yes
 
 - name: Creates the index.php file
   template:

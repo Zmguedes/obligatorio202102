@@ -4,10 +4,4 @@ ntp_restrict_1: 127.0.0.1
 ntp_restrict_2: -6 ::1
 ntp_includefile: /etc/ntp/crypto/pw
 ntp_keys: /etc/ntp/keys
-selinux:
-  - build-essential
-  - python3-selinux
-  - python3-semanage 
-  - policycoreutils
-  - selinux-utils
-  - selinux-basics
+ntpserver: uy.pool.ntp.org

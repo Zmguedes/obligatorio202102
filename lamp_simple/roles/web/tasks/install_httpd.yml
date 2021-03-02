@@ -15,10 +15,18 @@
   loop: "{{ packages_db }}"
   when: ansible_os_family == "Debian"
 
-- name: Check if Apache is running
+- name: Check if Apache is running on RedHat servers
   service:
     name: httpd
     state: started
+  when: ansible_os_family == "RedHat"
+
+- name: Check if Apache is running on Debian servers
+  service:
+    name: apache2.service
+    state: started
+  when: ansible_os_family == "Debian"
+
 
 - name: Open port 80 on firewall for RedHat servers
   firewalld:
@@ -36,15 +44,28 @@
     proto: tcp
   when: ansible_os_family == "Debian"
 
-- name: http service state
+- name: http service state on RedHat servers
   service:
     name: httpd
     state: started
     enabled: yes
+  when: ansible_os_family == "RedHat"
 
-    #- name: Configure SELinux to allow httpd to connect to remote database
-  #seboolean:
-  #  name: httpd_can_network_connect_db
-  #  state: true
-  #  persistent: yes
-  #when: sestatus.rc != 0
+- name: http service state on Debian servers
+  service:
+    name: apache2.service
+    state: started
+    enabled: yes
+  when: ansible_os_family == "Debian"
+
+- name: Check SELinux status on RedHat server
+  command: getenforce
+  register: sestatus
+  when: ansible_os_family == "RedHat"
+
+- name: Configure SELinux to allow httpd to connect to remote database on RedHat servers
+  seboolean:
+    name: httpd_can_network_connect_db
+    state: true
+    persistent: yes
+  when: sestatus != "Permissive" and ansible_os_family == "RedHat"

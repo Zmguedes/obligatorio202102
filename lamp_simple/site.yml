@@ -9,14 +9,14 @@
     - common
 
 - name: Configure and deploy the webservers and application code
-  hosts: linux
+  hosts: webservers
   become: yes
 
   roles:
     - web
 
 - name: Deploy MariaDB and configure the databases
-  hosts: linux
+  hosts: dbservers
   become: yes
 
   roles:
