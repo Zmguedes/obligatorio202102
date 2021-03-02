@@ -11,6 +11,3 @@
   service:
     name: ntp.service
     state: restarted
-
-- name: restart Debian Servers
-  reboot:
